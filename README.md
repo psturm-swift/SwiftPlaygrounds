@@ -1,5 +1,5 @@
 # Swift's UnfoldSequence
-In this article I want to show some examples which benefits from the use of the `UnfoldSequence`.
+In this article I want to show some examples which benefits from the use of `UnfoldSequence`.
 
 ## Printing all digits of an integer
 Suppose we want to sum up all digits of a non-negative integer value. The algorithm of getting all digits is easy. It can be expressed by a loop, a module operation and a division.
@@ -78,12 +78,18 @@ One helper is `UnfoldSequence<T, S>` which describes a sequence of values with t
 If `next` returns `nil`, then the sequence ends.
 
 To compute the digits of an integer we define the state as a tuple consisting of an integer and a boolean:
-'' typealias State = (Int, Bool)
+
+```Swift
+typealias State = (Int, Bool)
+```
 
 The first component of the state represents the number for which the digits needs to be computed and the boolean says if the algorithm is done. State `(n, b)` means that we need to generate the digits of number `n` if `b`is false. If `b` is true, no digits are left to be generated. In fact the final state will be `(0, true)`. 
 
 Let be `(123, false)` the initial state. The following state transitions needs to be performed by the next-function:
-'' (123, false) --> (12, false) --> (1, false) --> (0, true)
+
+```Swift
+(123, false) --> (12, false) --> (1, false) --> (0, true)
+```
 
 With each state transition the function needs to return the removed digit. If the final state is given, it will return `nil`:
 
@@ -128,8 +134,7 @@ As function `nextDigit` does not make much sense by its own, we might hide it wi
 Function `digitsOf` does not compute the digits of n. It just creates a sequence. The digits themselves are computed lazy along with the iteration.
 
 ## Fibonacci numbers
-Now that we know how `UnfoldSequence` works, we could try something else. The Fibonacci numbers is a famous number sequence. It starts with 0 and 1. The next numbers of the sequence are computed as the sum of the two previous Fibonacci numbers:
-'' 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+Now that we know how `UnfoldSequence` works, we could try something else. The Fibonacci numbers is a famous number sequence. It starts with 0 and 1. The next numbers of the sequence are computed as the sum of the two previous Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
 
 To compute the Fibonacci numbers with a next-function, we could use the tuple consisting of the two previous Fibonacci numbers as state. The initial state is then `(0, 1)`.
 
