@@ -54,7 +54,7 @@ It would be much better to separate the different concerns from each other. A so
 The digits are stored in an array. By using `digitsOf` the functions for the cross sum and printing digits become more easy:
 
 ```Swift
-     func printAllDigitsOf(_ n: Int) {
+    func printAllDigitsOf(_ n: Int) {
         for digit in digitsOf(n) {
             print(n)
         }
@@ -167,7 +167,7 @@ The interesting thing about the Fibonacci numbers is that it is infinite. Howeve
 How many Fibonacci numbers can we calculate with this sequence? Let's count all elements of the sequence:
 
 ```Swift
-let count = fibonacci().reduce(0) { sum, n in sum + 1 } // == 91
+    let count = fibonacci().reduce(0) { sum, n in sum + 1 } // == 91
 ```
 
 Only 91 numbers are possible until the maximum integer is exceeded. The overflow occurs a bit early. Actually two more numbers were already computed but not returned yet. But the benefit to have two more numbers compared to the effort to modify the next-function is too small. So we keep the function as is.
