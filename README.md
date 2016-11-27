@@ -169,7 +169,7 @@ The interesting thing about the Fibonacci numbers is that it is infinite. Howeve
     }
 ```
 
-How many Fibonacci numbers can we calculate with this sequence? Let's count all elements of the sequence:
+How many Fibonacci numbers can we calculate with this sequence? Let's count all elements:
 
 ```Swift
     let count = fibonacci().reduce(0) { sum, n in sum + 1 } // == 91
