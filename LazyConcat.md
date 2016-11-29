@@ -78,7 +78,7 @@ If you print the sequence, it does not start with `0,1,1,2,...`. The first two e
 concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
 ```
 
-Now the sequence has 93 elements. So two more elements then before. And the `nextFibonacciNumber` function is still as simple as possible. There was no need to make it more difficult. Here is the code for the fibonacci sequence in total:
+Now the sequence has 93 elements. So two more elements than before. And the `nextFibonacciNumber` function is still as simple as possible. There was no need to make it more difficult. Here is the code for the fibonacci sequence in total:
 
 ```Swift
 func fibonacci() -> UnfoldSequence<Int, (Array<Int>.Iterator, UnfoldSequence<Int, (Int, Int)>.Iterator)>
