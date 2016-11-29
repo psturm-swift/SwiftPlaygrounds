@@ -56,7 +56,7 @@ In last chapter I wrote that the Fibonacci sequence could be two number longer f
 I changed the `nextFibonacciNumber` a bit. It now returns sum instead of state.0.
 
 ```Swift
-func fibonacci() -> UnfoldSequence<Int, (Array<Int>.Iterator, UnfoldSequence<Int, (Int, Int)>.Iterator)>
+func fibonacci() -> UnfoldSequence<Int, (Int, Int)>
 {
         let nextFibonacciNumber = {
             (state: inout (Int, Int)) -> Int? in
