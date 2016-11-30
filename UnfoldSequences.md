@@ -72,9 +72,11 @@ So far so good. However, there is one point which is still not quite nice. We ar
 
 In Swift custom sequences need to conform to the Sequence protocol. To implement a Swift sequence from scratch, one need to implement a sequence and corresponding iterator class. However, there are already some helpers which simplifies this process.
 
-One helper is `UnfoldSequence<T, S>` which describes a sequence of values with type `T` by a closure. The closure function needs have the signature `next(state: inout S)->T?`. The function does two things:
+One helper is `UnfoldSequence<T, S>` which describes a sequence of values by a closure. All values of the sequence are of type `T`. The closure function needs have the signature `next(state: inout S)->T?`. The function does two things:
+
 1. It returns the "next" (optional) value of the sequence
 2. It modifies some kind of state
+3. 
 If `next` returns `nil`, then the sequence ends.
 
 To compute the digits of an integer we define the state as a tuple consisting of an integer and a boolean:
