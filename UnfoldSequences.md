@@ -91,7 +91,7 @@ Let be `(123, false)` the initial state. The following state transitions needs t
 (123, false) --> (12, false) --> (1, false) --> (0, true)
 ```
 
-With each state transition the function needs to return the removed digit. If the final state is given, it will return `nil`:
+With each state transition the function needs to return the removed digit. If the final state is reached, it will return `nil`:
 
 ```Swift
     func nextDigit(_ state: inout (Int, Bool)) -> Int? {
