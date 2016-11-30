@@ -32,7 +32,7 @@ Suppose we want to sum up all digits of a non-negative integer value. The algori
 ```
 
 ## Separation of concerns
-In both cases we mix up two different operation:
+In both cases we mix up two different operations:
 1. Extracting the digits of an integer
 2. Doing something with the digits
 
