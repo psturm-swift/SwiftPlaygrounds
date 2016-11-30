@@ -103,7 +103,7 @@ With each state transition the function needs to return the removed digit. If th
     }
 ```
 
-Now we are to rewrite `digitsOf` by creating an `UnfoldSequence` with next function `nextDigit`:
+`digitsOf` can be written by creating an `UnfoldSequence` with next function `nextDigit`:
 
 ```Swift
     func digitsOf(n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
