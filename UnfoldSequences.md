@@ -76,7 +76,7 @@ One helper is `UnfoldSequence<T, S>` which describes a sequence of values by a c
 
 1. It returns the "next" (optional) value of the sequence
 2. It modifies some kind of state
-3. 
+
 If `next` returns `nil`, then the sequence ends.
 
 To compute the digits of an integer we define the state as a tuple consisting of an integer and a boolean:
