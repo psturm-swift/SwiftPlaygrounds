@@ -36,10 +36,13 @@ With each call this function increments the iterator of the first sequence until
 In total the concat function looks like this:
 
 ```Swift
+typealias ConcatSequence<S: Sequence, T: Sequence> = 
+            UnfoldSequence<S.Iterator.Element, (S.Iterator, T.Iterator)>
+
 func concat<
         S: Sequence, T: Sequence where 
         S.Iterator.Element==T.Iterator.Element>(_ lhs: S, _ rhs: T)
-        -> UnfoldSequence<S.Iterator.Element, (S.Iterator, T.Iterator)>
+        -> ConcatSequence<S, T>
 {
     typealias Element = S.Iterator.Element
     let nextElement = {
@@ -56,7 +59,9 @@ In last chapter I wrote that the Fibonacci sequence could be two number longer f
 I changed the `nextFibonacciNumber` a bit. It now returns sum instead of state.0.
 
 ```Swift
-func fibonacci() -> UnfoldSequence<Int, (Int, Int)>
+typealias FibonacciSequence = UnfoldSequence<Int, (Int, Int)>
+
+func fibonacci() -> FibonacciSequence
 {
         let nextFibonacciNumber = {
             (state: inout (Int, Int)) -> Int? in
@@ -81,7 +86,10 @@ concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
 Now the sequence has 93 elements. So two more elements than before. And the `nextFibonacciNumber` function is still as simple as possible. There was no need to make it more difficult. Here is the code for the fibonacci sequence in total:
 
 ```Swift
-func fibonacci() -> UnfoldSequence<Int, (Array<Int>.Iterator, UnfoldSequence<Int, (Int, Int)>.Iterator)>
+typealias FibonacciSequenceTail = UnfoldSequence<Int, (Int, Int)>
+typealias FibonacciSequence = ConcatSequence<Array<Int>, FibonacciSequenceTail>
+
+func fibonacci() -> FibonacciSequence
 {
         let nextFibonacciNumber = {
             (state: inout (Int, Int)) -> Int? in
