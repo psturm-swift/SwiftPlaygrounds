@@ -5,30 +5,30 @@ In this article I want to show some examples which benefits from the use of `Unf
 Suppose we want to sum up all digits of a non-negative integer value. The algorithm of getting all digits is easy. It can be expressed by a loop, a module operation and a division.
 
 ```Swift
-    func printAllDigitsOf(_ n: Int) {
-       var m = abs(n)
-       repeat {
-           let digit = m % 10
-           m = m / 10
-           print(digit)
-       } while m != 0
-    }
+func printAllDigitsOf(_ n: Int) {
+    var m = abs(n)
+    repeat {
+        let digit = m % 10
+         m = m / 10
+         print(digit)
+    } while m != 0
+}
 ```
 
 `m%10` is the right most digit of `m`. `m/10` removes the right most digit from `m`. If `m` becomes `0`, the algorithm is done. This function can be extended easily to sum up all digits (Cross sum). 
 
 
 ```Swift
-    func crossSum(_ n: Int) -> Int {
-        var m = abs(n)
-        var sum = 0
-        repeat {
-            let digit = m % 10
-            m = m / 10
-            sum += digit
-        } while m != 0
-        return sum
-    }
+  func crossSum(_ n: Int) -> Int {
+      var m = abs(n)
+      var sum = 0
+      repeat {
+          let digit = m % 10
+          m = m / 10
+          sum += digit
+      } while m != 0
+      return sum
+  }
 ```
 
 ## Separation of concerns
@@ -39,32 +39,32 @@ In both cases we mix up two different operations:
 It would be much better to separate the different concerns from each other. A sort improvement would be if we create a function which does only the extraction of digits:
 
 ```Swift
-    func digitsOf(_ n: Int) -> [Int] {
-        var digits: [Int] = []
-        var m = abs(n)
-        repeat {
-            let digit = m % 10
-            m = m / 10
-            digits.append(digit)
-        } while m != 0
-        return digits
-    }
+func digitsOf(_ n: Int) -> [Int] {
+    var digits: [Int] = []
+    var m = abs(n)
+    repeat {
+        let digit = m % 10
+        m = m / 10
+        digits.append(digit)
+    } while m != 0
+    return digits
+ }
 ```
 
 The digits are stored in an array. By using `digitsOf` the functions for the cross sum and printing digits become more easy:
 
 ```Swift
-    func printAllDigitsOf(_ n: Int) {
-        for digit in digitsOf(n) {
-            print(n)
-        }
+func printAllDigitsOf(_ n: Int) {
+    for digit in digitsOf(n) {
+        print(n)
     }
+}
 ```
 
 ```Swift
-    func crossSum(_ n: Int) -> Int 
-        return digitsOf(n).reduce(0, +)
-    }
+func crossSum(_ n: Int) -> Int 
+    return digitsOf(n).reduce(0, +)
+}
 ```
 
 ## Being lazy with UnfoldSequence
@@ -82,7 +82,7 @@ If `next` returns `nil`, then the sequence ends.
 To compute the digits of an integer we define the state as a tuple consisting of an integer and a boolean:
 
 ```Swift
-typealias State = (Int, Bool)
+  typealias State = (Int, Bool)
 ```
 
 The first component of the state represents the number for which the digits needs to be computed and the boolean says if the algorithm is done. State `(n, b)` means that we need to generate the digits of number `n` if `b`is false. If `b` is true, no digits are left to be generated. In fact the final state will be `(0, true)`. 
@@ -90,47 +90,47 @@ The first component of the state represents the number for which the digits need
 Let be `(123, false)` the initial state. The following state transitions needs to be performed by the next-function:
 
 ```Swift
-(123, false) --> (12, false) --> (1, false) --> (0, true)
+  (123, false) --> (12, false) --> (1, false) --> (0, true)
 ```
 
 With each state transition the function needs to return the removed digit. If the final state is reached, it will return `nil`:
 
 ```Swift
-    func nextDigit(_ state: inout (Int, Bool)) -> Int? {
-        let (n, done) = state
-        guard !done else { return nil }
-        let digit = n % 10
-        let tail = n / 10
-        state = (tail, tail == 0)
-    }
+func nextDigit(_ state: inout (Int, Bool)) -> Int? {
+    let (n, done) = state
+    guard !done else { return nil }
+    let digit = n % 10
+    let tail = n / 10
+    state = (tail, tail == 0)
+}
 ```
 
 `digitsOf` can be written by creating an `UnfoldSequence` with next function `nextDigit`:
 
 ```Swift
-    func digitsOf(n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
-        return sequence(state: (n, false), next: nextDigit)
-    }
+func digitsOf(n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
+    return sequence(state: (n, false), next: nextDigit)
+}
 ```
 
 As function `nextDigit` does not make much sense by its own, we might hide it within function `digitsOf`:
 
 ```Swift
-    func digitsOf(_ n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
-        let nextDigit = {
-            (state: inout (Int, Bool)) -> Int? in
+func digitsOf(_ n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
+    let nextDigit = {
+        (state: inout (Int, Bool)) -> Int? in
     
-            let (n, done) = state
-            guard !done else { return nil }
-            let digit = n % 10
-            let tail = n / 10
-            state = (tail, tail == 0)
+        let (n, done) = state
+        guard !done else { return nil }
+        let digit = n % 10
+        let tail = n / 10
+        state = (tail, tail == 0)
  
-            return digit
-        }
- 
-        return sequence(state: (n, false), next: nextDigit)
+        return digit
     }
+ 
+    return sequence(state: (n, false), next: nextDigit)
+}
 ```
 
 Function `digitsOf` does not compute the digits of n. It just creates a sequence. The digits themselves are computed lazy along with the iteration.
@@ -141,40 +141,44 @@ Now that we know how `UnfoldSequence` works, we could try something else. The Fi
 To compute the Fibonacci numbers with a next-function, we could use the tuple consisting of the two previous Fibonacci numbers as state. The initial state is then `(0, 1)`.
 
 ```Swift
-    func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
-        let nextFibonacciNumber = {
-            (state: inout (Int, Int)) -> Int? in
-            let (n, m) = state
-            let sum = n + m
-            state = (m, sum)
-            return n
-       }
+func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
+    let nextFibonacciNumber = {
+        (state: inout (Int, Int)) -> Int? in
+
+        let (n, m) = state
+        let sum = n + m
+        state = (m, sum)
+
+        return n
+    }
  
-       return sequence(state: (0, 1), next: nextFibonacciNumber)
+    return sequence(state: (0, 1), next: nextFibonacciNumber)
     }
 ```
 
 The interesting thing about the Fibonacci numbers is that it is infinite. However, Int is not infinite and the function will crash if the overflow occurs. To prevent that we can use the function `addWithOverflow` and add a guard statement:
 
 ```Swift
-    func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
-        let nextFibonacciNumber = {
-            (state: inout (Int, Int)) -> Int? in
-            let (n, m) = state
-            let (sum, overflow) = Int.addWithOverflow(n, m)
-            guard !overflow else { return nil }
-            state = (m, sum)
-            return n
-        }
- 
-        return sequence(state: (0, 1), next: nextFibonacciNumber)
+func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
+    let nextFibonacciNumber = {
+        (state: inout (Int, Int)) -> Int? in
+
+        let (n, m) = state
+        let (sum, overflow) = Int.addWithOverflow(n, m)
+        guard !overflow else { return nil }
+        state = (m, sum)
+
+        return n
     }
+ 
+    return sequence(state: (0, 1), next: nextFibonacciNumber)
+}
 ```
 
 How many Fibonacci numbers can we calculate with this sequence? Let's count all elements:
 
 ```Swift
-    let count = fibonacci().reduce(0) { sum, n in sum + 1 } // == 91
+let count = fibonacci().reduce(0) { sum, n in sum + 1 } // == 91
 ```
 
 Only 91 numbers are possible until the maximum integer is exceeded. The overflow occurs a bit early. Actually two more numbers were already computed but not returned yet. But the benefit to have two more numbers compared to the effort to modify the next-function is too small. So we keep the function as is.

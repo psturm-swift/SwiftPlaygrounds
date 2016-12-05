@@ -44,12 +44,12 @@ func concat<
         S.Iterator.Element==T.Iterator.Element>(_ lhs: S, _ rhs: T)
         -> ConcatSequence<S, T>
 {
-    typealias Element = S.Iterator.Element
-    let nextElement = {
-        (state: inout (S.Iterator, T.Iterator)) -> Element? in
-        return state.0.next() ?? state.1.next()
-    }
-    return sequence(state: (lhs.makeIterator(), rhs.makeIterator()), next: nextElement)
+      typealias Element = S.Iterator.Element
+      let nextElement = {
+          (state: inout (S.Iterator, T.Iterator)) -> Element? in
+          return state.0.next() ?? state.1.next()
+      }
+      return sequence(state: (lhs.makeIterator(), rhs.makeIterator()), next: nextElement)
 }
 ```
 
@@ -63,17 +63,17 @@ typealias FibonacciSequence = UnfoldSequence<Int, (Int, Int)>
 
 func fibonacci() -> FibonacciSequence
 {
-        let nextFibonacciNumber = {
-            (state: inout (Int, Int)) -> Int? in
+      let nextFibonacciNumber = {
+          (state: inout (Int, Int)) -> Int? in
 
-            let (sum, overflow) = Int.addWithOverflow(state.0, state.1)
-            guard !overflow else { return nil }
-            state = (state.1, sum)
+          let (sum, overflow) = Int.addWithOverflow(state.0, state.1)
+          guard !overflow else { return nil }
+          state = (state.1, sum)
 
-            return sum
-        }
+          return sum
+      }
 
-        return sequence(state: (0, 1), next: nextFibonacciNumber)
+      return sequence(state: (0, 1), next: nextFibonacciNumber)
 }
 ```
 
@@ -91,17 +91,17 @@ typealias FibonacciSequence = ConcatSequence<Array<Int>, FibonacciSequenceTail>
 
 func fibonacci() -> FibonacciSequence
 {
-        let nextFibonacciNumber = {
-            (state: inout (Int, Int)) -> Int? in
+    let nextFibonacciNumber = {
+        (state: inout (Int, Int)) -> Int? in
 
-            let (sum, overflow) = Int.addWithOverflow(state.0, state.1)
-            guard !overflow else { return nil }
-            state = (state.1, sum)
+        let (sum, overflow) = Int.addWithOverflow(state.0, state.1)
+        guard !overflow else { return nil }
+        state = (state.1, sum)
 
-            return sum
-        }
+        return sum
+    }
 
-        concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
+    concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
 }
 ```
 
