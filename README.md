@@ -316,5 +316,4 @@ It will be left associative. This means if you concat three sequences then the f
 let result = [1, 2, 3] <+> [4, 5, 6] <+> [7, 8, 9]
 ```
 
-The nested call disappeared. Remember, the `<+>`-operation does not really concatenate the sequences. It just creates another sequence is to able to iterate over the given sequences as if they were concatenated.
-
+The nested call disappeared. Remember, the `<+>`-operation does not really concatenate the sequences. It just creates another sequence that is able to iterate over the given sequences as if they were concatenated.
