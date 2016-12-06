@@ -37,6 +37,11 @@ func concat<S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Elemen
     return sequence(state: (lhs.makeIterator(), rhs.makeIterator()), next: nextElement)
 }
 
+infix operator <+>: AdditionPrecedence
+func <+><S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Element>(lhs: S, rhs: T) -> ConcatSequence<S, T> {
+    return concat(lhs, rhs)
+}
+
 typealias FibonacciSequenceTail = UnfoldSequence<Int, (Int, Int)>
 typealias FibonacciSequence = ConcatSequence<Array<Int>, FibonacciSequenceTail>
 
@@ -51,12 +56,7 @@ func fibonacci() -> FibonacciSequence
         return sum
     }
     
-    return concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
-}
-
-infix operator <+>: AdditionPrecedence
-func <+><S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Element>(lhs: S, rhs: T) -> ConcatSequence<S, T> {
-    return concat(lhs, rhs)
+    return [0, 1] <+> sequence(state: (0, 1), next: nextFibonacciNumber)
 }
 
 let a = [20, 19, 18] <+> [-1] <+> fibonacci()
