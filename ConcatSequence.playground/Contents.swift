@@ -54,5 +54,11 @@ func fibonacci() -> FibonacciSequence
     return concat([0, 1], sequence(state: (0, 1), next: nextFibonacciNumber))
 }
 
-let fibSeq = Array(fibonacci()).count
+infix operator <+>: AdditionPrecedence
+func <+><S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Element>(lhs: S, rhs: T) -> ConcatSequence<S, T> {
+    return concat(lhs, rhs)
+}
 
+let a = [20, 19, 18] <+> [-1] <+> fibonacci()
+print(a)
+print(Array(a))

@@ -105,4 +105,31 @@ func fibonacci() -> FibonacciSequence
 }
 ```
 
+
+## Lazy concat operator
+Function `concat` is quite powerful. It is also able to concat three sequences lazily:
+
+```Swift
+let result = concat(concat(\[1, 2, 3], \[4, 5, 6]), [7, 8, 9])
+```
+
+However, the nested concat constructs is a bit hard to read. And will get worse with each sequence. How can this be improved? Well the definition of a "lazy concat"-operator would help. The following code defines the operator `<+>` which just calls concat and will have the same precedence as the standard `+`-operation.
+
+```Swift
+infix operator <+>: AdditionPrecedence
+func <+><S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Element>(lhs: S, rhs: T) -> ConcatSequence<S, T> {
+    return concat(lhs, rhs)
+}
+```
+
+It will be left associative. This means if you concat three sequences then the first two sequence (from left) will be concatenated first. 
+
+```Swift
+let result = [1, 2, 3] <+> [4, 5, 6] <+> [7, 8, 9]
+```
+
+The nested call disappeared. Remember, the `<+>`-operation does not really concatenate the sequences. It just creates another sequence is to able to iterate over the given sequences as if they were concatenated.
+
+
+
 [1]:	UnfoldSequences.md "UnfoldSequences.md"
