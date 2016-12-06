@@ -30,10 +30,12 @@ typealias ConcatSequence<S: Sequence, T: Sequence> =
 func concat<S: Sequence, T: Sequence where S.Iterator.Element==T.Iterator.Element>(_ lhs: S, _ rhs: T) -> ConcatSequence<S, T>
 {
     typealias Element = S.Iterator.Element
+    
     let nextElement = {
         (state: inout (S.Iterator, T.Iterator)) -> Element? in
         return state.0.next() ?? state.1.next()
     }
+    
     return sequence(state: (lhs.makeIterator(), rhs.makeIterator()), next: nextElement)
 }
 
