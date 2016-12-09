@@ -79,57 +79,39 @@ One helper is `UnfoldSequence<T, S>` which describes a sequence of values by a c
 
 If `next` returns `nil`, then the sequence ends.
 
-To compute the digits of an integer we define the state as a tuple consisting of an integer and a boolean:
+### The next function
+To create an `UnfoldSequence` it is necessary to define a next-function which extracts the right most digit. The `state` parameter is the number for which we want to extract the right most digit. If `state` is `nil` then there is no digit left and the function will return `nil`. Otherwise the function will return the right most digit of `state`. The new state will be shortened by one digit:
 
 ```Swift
-  typealias State = (Int, Bool)
+func extractRightMostDigit(_ number: Int?) -> Int? {
+        guard let n = number else { return nil }
+        number = (n < 10) ? nil : n / 10
+        return n % 10
+ }
 ```
 
-The first component of the state represents the number for which the digits needs to be computed and the boolean says if the algorithm is done. State `(n, b)` means that we need to generate the digits of number `n` if `b`is false. If `b` is true, no digits are left to be generated. In fact the final state will be `(0, true)`. 
-
-Let be `(123, false)` the initial state. The following state transitions needs to be performed by the next-function:
-
-```Swift
-  (123, false) --> (12, false) --> (1, false) --> (0, true)
-```
-
-With each state transition the function needs to return the removed digit. If the final state is reached, it will return `nil`:
+### Creating an UnfoldSequence
+`digitsOf` can be written by creating an `UnfoldSequence` with next function `extractRightMostDigit`:
 
 ```Swift
-func nextDigit(_ state: inout (Int, Bool)) -> Int? {
-    let (n, done) = state
-    guard !done else { return nil }
-    let digit = n % 10
-    let tail = n / 10
-    state = (tail, tail == 0)
+func digitsOf(n: Int) -> UnfoldSequence<Int, Int?> {
+    return sequence(state: n, next: extractRightMostDigit)
 }
 ```
 
-`digitsOf` can be written by creating an `UnfoldSequence` with next function `nextDigit`:
+As function `extractRightMostDigit` does not make much sense by its own, we might hide it within function `digitsOf`:
 
 ```Swift
-func digitsOf(n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
-    return sequence(state: (n, false), next: nextDigit)
-}
-```
-
-As function `nextDigit` does not make much sense by its own, we might hide it within function `digitsOf`:
-
-```Swift
-func digitsOf(_ n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
-    let nextDigit = {
-        (state: inout (Int, Bool)) -> Int? in
+func digitsOf(_ n: Int) -> UnfoldSequence<Int, Int?> {
+    let extractRightMostDigit = {
+        (state: inout Int?) -> Int? in
     
-        let (n, done) = state
-        guard !done else { return nil }
-        let digit = n % 10
-        let tail = n / 10
-        state = (tail, tail == 0)
- 
-        return digit
+        guard let n = number else { return nil }
+        number = (n < 10) ? nil : n / 10
+        return n % 10
     }
  
-    return sequence(state: (n, false), next: nextDigit)
+    return sequence(state: (n, false), next: extractRightMostDigit)
 }
 ```
 

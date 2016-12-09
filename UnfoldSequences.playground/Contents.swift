@@ -25,18 +25,14 @@
 import Foundation
 
 // This function creates a lazy sequence of digits for integer n
-func digitsOf(_ n: Int) -> UnfoldSequence<Int, (Int, Bool)> {
+func digitsOf(_ n: Int) -> UnfoldSequence<Int, Int?> {
     let nextDigit = {
-        (state: inout (Int, Bool)) -> Int? in
-        let (n, done) = state
-        guard !done else { return nil }
-        let digit = n % 10
-        let tail = n / 10
-        state = (tail, tail == 0)
-        
-        return digit
+        (number: inout Int?) -> Int? in
+        guard let n = number else { return nil }
+        number = (n < 10) ? nil : n / 10
+        return n % 10
     }
-    return sequence(state: (n, false), next: nextDigit)
+    return sequence(state: n, next: nextDigit)
 }
 
 // Functions sums up all digits for integer n
@@ -46,13 +42,12 @@ func crossSum(_ n: Int) -> Int {
 
 // Functions prints all digits for integer n
 func printAllDigits(_ n: Int) {
-    for digit in digitsOf(n) {
-        print(digit)
-    }
+    digitsOf(n).forEach { n in print(n) }
 }
 
 // Fibonacci Sequence
-func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
+typealias FibonacciSequence = UnfoldSequence<Int, (Int, Int)>
+func fibonacci() -> FibonacciSequence {
     let nextFibonacciNumber = {
         (state: inout (Int, Int)) -> Int? in
         let (n, m) = state
@@ -64,4 +59,21 @@ func fibonacci() -> UnfoldSequence<Int, (Int, Int)> {
     
     return sequence(state: (0, 1), next: nextFibonacciNumber)
 }
+
+typealias LeibnizSequence = UnfoldSequence<Double, (Double, Double)>
+
+func leibnizSequence() -> LeibnizSequence {
+    let leibnizStep = {
+        (state: inout (Double, Double)) -> Double? in
+        let (k, sum) = state
+        state = (k + 1.0, sum + pow(-1.0, k) / (2 * k + 1))
+        return 4.0 * state.1
+    }
+    
+    return sequence(state: (0.0, 0.0), next: leibnizStep)
+}
+
+print(Array(digitsOf(1234)))
+print(Array(digitsOf(4)))
+print(Array(digitsOf(0)))
 
