@@ -80,12 +80,12 @@ One helper is `UnfoldSequence<T, S>` which describes a sequence of values by a c
 If `next` returns `nil`, then the sequence ends.
 
 ### The next function
-To create an `UnfoldSequence` it is necessary to define a next-function which extracts the right most digit. The `state` parameter is the number for which we want to extract the right most digit. If `state` is `nil` then there is no digit left and the function will return `nil`. Otherwise the function will return the right most digit of `state`. The new state will be shortened by one digit:
+To create an `UnfoldSequence` for our particular problem, we define a next-function which extracts the right most digit first. The `state` parameter is the number for which we want to extract the right most digit. If `state` is `nil` then there is no digit left and the function will return `nil`. Otherwise the function will return the right most digit of `state`. The new state will be shortened by one digit:
 
 ```Swift
-func extractRightMostDigit(_ number: Int?) -> Int? {
-        guard let n = number else { return nil }
-        number = (n < 10) ? nil : n / 10
+func extractRightMostDigit(_ state: inout Int?) -> Int? {
+        guard let n = state else { return nil }
+        state = (n < 10) ? nil : n / 10
         return n % 10
  }
 ```
@@ -106,8 +106,8 @@ func digitsOf(_ n: Int) -> UnfoldSequence<Int, Int?> {
     let extractRightMostDigit = {
         (state: inout Int?) -> Int? in
     
-        guard let n = number else { return nil }
-        number = (n < 10) ? nil : n / 10
+        guard let n = state else { return nil }
+        state = (n < 10) ? nil : n / 10
         return n % 10
     }
  

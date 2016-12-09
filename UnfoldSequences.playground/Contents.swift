@@ -27,9 +27,10 @@ import Foundation
 // This function creates a lazy sequence of digits for integer n
 func digitsOf(_ n: Int) -> UnfoldSequence<Int, Int?> {
     let nextDigit = {
-        (number: inout Int?) -> Int? in
-        guard let n = number else { return nil }
-        number = (n < 10) ? nil : n / 10
+        (state: inout Int?) -> Int? in
+        
+        guard let n = state else { return nil }
+        state = (n < 10) ? nil : n / 10
         return n % 10
     }
     return sequence(state: n, next: nextDigit)
