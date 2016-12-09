@@ -111,7 +111,7 @@ func digitsOf(_ n: Int) -> UnfoldSequence<Int, Int?> {
         return n % 10
     }
  
-    return sequence(state: (n, false), next: extractRightMostDigit)
+    return sequence(state: n, next: extractRightMostDigit)
 }
 ```
 
